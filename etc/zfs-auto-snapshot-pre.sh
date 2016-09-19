@@ -2,5 +2,6 @@
 
 if [ "$1" = "rpool" ]; then 
     tar -czf /var/backups/pve.tar.gz /etc/pve
-    chmod 600 /var/backups/pve.tar.gz
+    zfs list -oname,mountpoint >/var/backups/zfs-mp
+    chmod 600 /var/backups/pve.tar.gz /var/backups/zfs-mp
 fi
