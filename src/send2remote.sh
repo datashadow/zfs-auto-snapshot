@@ -33,5 +33,8 @@ for srcfs in $(zfs list -rHt filesystem,volume -o name $srcfs); do
 
     echo "### $srcfs $fromsnap -> $tosnap"
     $srcssh zfs send -p $inc $srcfs@$tosnap | $dstssh zfs recv -vFus $dstfs/$srcfs
-    [ -z $fromsnap ] && $dstssh zfs set canmount=off $dstfs/$srcfs
+    T=$(zfs get type -Ho value $srcfs)
+    if [ "$T" = "filesystem" -a -z "$fromsnap" ]; then
+        echo $dstssh zfs set canmount=off $dstfs/$srcfs
+    fi
 done
