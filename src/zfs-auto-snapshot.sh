@@ -380,7 +380,7 @@ ZFS_LIST=$(env LC_ALL=C zfs list -H -t filesystem,volume -s name \
 if [ -n "$opt_fast_zfs_list" ]
 then
 	SNAPSHOTS_OLD=$(env LC_ALL=C zfs list -H -t snapshot -o name -s name|grep $opt_prefix |awk '{ print substr( $0, length($0) - 14, length($0) ) " " $0}' |sort -r -k1,1 -k2,2|awk '{ print substr( $0, 17, length($0) )}') \
-	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }#' Fix mc
+	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }
 else
 	SNAPSHOTS_OLD=$(env LC_ALL=C zfs list -H -t snapshot -S creation -o name) \
 	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }
@@ -578,7 +578,7 @@ print_log notice "@$SNAPNAME," \
   "$DESTRUCTION_COUNT destroyed," \
   "$WARNING_COUNT warnings."
 
-if [ "$opt_send" = "$opt_label" ] then
+if [ "$opt_send" = "$opt_label" ]; then
     export $opt_label
     /etc/zfs-auto-snapshot/send
 fi

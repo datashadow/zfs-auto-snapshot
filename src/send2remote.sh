@@ -5,7 +5,7 @@ if [ "$#" -ne 2 ]; then
 fi
 #set -x
 exec 3>&1
-exec 1>/var/log/zfs-auto-snapshot.log 2>&1
+exec 1>/var/log/zfs-auto-send.log 2>&1
 RC=0
 trap RC=1 ERR
 
@@ -75,6 +75,6 @@ done
 exec 1>&3
 if [ $RC -ne 0 ]; then
 d=$(date --utc +%F-%H%M)
-mv /var/log/zfs-auto-snapshot.log /var/log/zfs-auto-snapshot.err.$d
-echo There were errors while send. Details in /var/log/zfs-auto-snapshot.err.$d
+mv /var/log/zfs-auto-send.log /var/log/zfs-auto-send.err.$d
+echo There were errors while send. Details in /var/log/zfs-auto-send.err.$d
 fi
