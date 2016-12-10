@@ -7,7 +7,6 @@ fi
 exec 3>&1
 exec 1>/var/log/zfs-auto-send.log 2>&1
 RC=0
-trap RC=1 ERR
 
 srcssh=$(expr "$1" : '\(^.*\):') #' Fix mc
 [ -z $srcssh ] || srcssh="ssh $srcssh"
@@ -19,8 +18,9 @@ dstfs=${2#*:}
 #filter frequent & hourly
 ffd=" -e /frequent\|hourly/d"
 test "$opt_label" = "hourly" && ffd=" -e /frequent/d"
-test "$opt_label" = "frequent" ] && ffd=
+test "$opt_label" = "frequent" && ffd=
 
+trap RC=1 ERR
 get_snaps_src(){
     $srcssh zfs list -rd1 -tsnap -H -oname -S creation $srcfs | sed -e 's/^.*@//' $ffd
 }
@@ -65,7 +65,7 @@ done
 echo !!!!!!! delete deleted from $srcfs0
 deleted=$(diff --old-group-format='' --unchanged-group-format='' \
 <($srcssh zfs list -rHt filesystem,volume -o name,bla.ssc:auto-send $srcfs0 | awk ' $2 != "false" {print $1}') \
-<($dstssh zfs list -rHt filesystem,volume -o name $dstfs/$srcfs0 | sed s,$dstfs/,,))
+<($dstssh zfs list -rHt filesystem,volume -o name $dstfs/$srcfs0 | sed s,$dstfs/,,),true)
 
 for D in $deleted; do
     echo destroy $dstfs/$D
