@@ -337,8 +337,8 @@ do
 			shift 1
 			;;
 		(--send)
-			opt_send="$2"
-			shift 2
+			opt_send='1'
+			shift 1
 			;;
 		(--)
 			shift 1
@@ -578,7 +578,7 @@ print_log notice "@$SNAPNAME," \
   "$DESTRUCTION_COUNT destroyed," \
   "$WARNING_COUNT warnings."
 
-if [ "$opt_send" = "$opt_label" ]; then
+if [ -n "$opt_send" ]; then
     export $opt_label
     /etc/zfs-auto-snapshot/send
 fi
