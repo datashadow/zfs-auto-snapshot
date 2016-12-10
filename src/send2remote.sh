@@ -65,7 +65,7 @@ done
 echo !!!!!!! delete deleted from $srcfs0
 deleted=$(diff --old-group-format='' --unchanged-group-format='' \
 <($srcssh zfs list -rHt filesystem,volume -o name,bla.ssc:auto-send $srcfs0 | awk ' $2 != "false" {print $1}') \
-<($dstssh zfs list -rHt filesystem,volume -o name $dstfs/$srcfs0 | sed s,$dstfs/,,),true)
+<($dstssh zfs list -rHt filesystem,volume -o name $dstfs/$srcfs0 | sed s,$dstfs/,,);true)
 
 for D in $deleted; do
     echo destroy $dstfs/$D
