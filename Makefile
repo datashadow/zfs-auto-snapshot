@@ -15,7 +15,8 @@ install:
 	install etc/zfs-auto-snapshot.cron.monthly  $(DESTDIR)/etc/cron.monthly/zfs-auto-snapshot
 	install -d $(DESTDIR)/etc/zfs-auto-snapshot
 	install -m 700 --backup=t etc/zfs-auto-snapshot-pre.sh  $(DESTDIR)/etc/zfs-auto-snapshot/pre
-	install -m 700 --backup=t etc/zfs-auto-snapshot-post-once.sh  $(DESTDIR)/etc/zfs-auto-snapshot/post-once
+	install -m 700 --backup=t etc/zfs-auto-snapshot-send.sh  $(DESTDIR)/etc/zfs-auto-snapshot/send
+	install -m 700 --backup=t etc/zfs-auto-snapshot.conf  $(DESTDIR)/etc/zfs-auto-snapshot/zfs-auto-snapshot.conf
 	install -d $(DESTDIR)$(PREFIX)/share/man/man8
 	install src/zfs-auto-snapshot.8 $(DESTDIR)$(PREFIX)/share/man/man8/zfs-auto-snapshot.8
 	install -d $(DESTDIR)$(PREFIX)/sbin

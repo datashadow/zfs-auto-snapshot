@@ -1,2 +1,2 @@
 #!/bin/sh
-exec zfs-auto-snapshot --quiet --syslog --label=monthly --keep=6 --pre-snapshot=/etc/zfs-auto-snapshot/pre //
+exec flock -n /run/lock/zfs-auto-snapshot.lck zfs-auto-snapshot --quiet --syslog --label=monthly --keep=6 --pre-snapshot=/etc/zfs-auto-snapshot/pre //

@@ -24,6 +24,7 @@ IFS="
 "
 
 # Set default program options.
+opt_send=''
 opt_backup_full=''
 opt_backup_incremental=''
 opt_default_exclude=''
@@ -64,8 +65,9 @@ print_usage ()
   -h, --help         Print this usage message.
   -k, --keep=NUM     Keep NUM recent snapshots and destroy older snapshots.
   -l, --label=LAB    LAB is usually 'hourly', 'daily', or 'monthly'.
-  -p, --prefix=PRE   PRE is 'zfs-auto-snap' by default.
+  -p, --prefix=PRE   PRE is 'zas' by default.
   -q, --quiet        Suppress warnings and notices at the console.
+      --send         Send zfs backup by script /etc/zfs-auto-snapshot/send
       --send-full=F  Send zfs full backup. Unimplemented.
       --send-incr=F  Send zfs incremental backup. Unimplemented.
       --sep=CHAR     Use CHAR to separate date stamps in snapshot names.
@@ -211,7 +213,7 @@ GETOPT=$(getopt \
   --longoptions=default-exclude,dry-run,fast,skip-scrub,recursive \
   --longoptions=event:,keep:,label:,prefix:,sep: \
   --longoptions=debug,help,quiet,syslog,verbose \
-  --longoptions=pre-snapshot:,post-snapshot:,destroy-only \
+  --longoptions=pre-snapshot:,post-snapshot:,destroy-only,send \
   --options=dnshe:l:k:p:rs:qgv \
   -- "$@" ) \
   || exit 128
@@ -334,6 +336,10 @@ do
 			opt_do_snapshots=''
 			shift 1
 			;;
+		(--send)
+			opt_send="$2"
+			shift 2
+			;;
 		(--)
 			shift 1
 			break
@@ -374,7 +380,7 @@ ZFS_LIST=$(env LC_ALL=C zfs list -H -t filesystem,volume -s name \
 if [ -n "$opt_fast_zfs_list" ]
 then
 	SNAPSHOTS_OLD=$(env LC_ALL=C zfs list -H -t snapshot -o name -s name|grep $opt_prefix |awk '{ print substr( $0, length($0) - 14, length($0) ) " " $0}' |sort -r -k1,1 -k2,2|awk '{ print substr( $0, 17, length($0) )}') \
-	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }
+	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }#' Fix mc
 else
 	SNAPSHOTS_OLD=$(env LC_ALL=C zfs list -H -t snapshot -S creation -o name) \
 	  || { print_log error "zfs list $?: $SNAPSHOTS_OLD"; exit 137; }
@@ -571,6 +577,11 @@ print_log notice "@$SNAPNAME," \
   "$SNAPSHOT_COUNT created," \
   "$DESTRUCTION_COUNT destroyed," \
   "$WARNING_COUNT warnings."
+
+if [ "$opt_send" = "$opt_label" ] then
+    export $opt_label
+    /etc/zfs-auto-snapshot/send
+fi
 
 exit 0
 # }
