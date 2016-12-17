@@ -22,3 +22,8 @@ wget https://github.com/mustafirus/zfs-auto-snapshot/archive/master.zip
 unzip master.zip
 cd zfs-auto-snapshot-master
 make install
+
+Configuration:
+-------------
+
+Edit files in /etc/zfs-auto-snapshot
