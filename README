@@ -27,3 +27,11 @@ Configuration:
 -------------
 
 Edit files in /etc/zfs-auto-snapshot
+
+TODO:
+-------------
+Add custom properties to dataset with path to pre-snaphot script and post-snaphot script.
+PARAMETERS dataset snap
+
+Make zfs-auto-snapshot vm aware - may be for freezing/unfreezing vm, or run script inside vm
+May be add custom poperty VMNUMBER
